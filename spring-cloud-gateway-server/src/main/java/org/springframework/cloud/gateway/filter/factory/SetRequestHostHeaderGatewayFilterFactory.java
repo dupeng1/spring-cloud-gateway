@@ -33,6 +33,21 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.P
 /**
  * @author Andrew Fitzgerald
  */
+/**
+ * 网关过滤器工厂，会修改请求header中的host值，在某些情况下，可能需要覆盖消息头Host，在这种情况下，SetRequestHostHeader可以用指定的值替换现有的Host<br>
+ * <br>
+ * routes:<br>
+ *       - id: set_request_host_header_route<br>
+ *         uri: http://localhost:8080/headers<br>
+ *         predicates:<br>
+ *         - Path=/headers<br>
+ *         filters:<br>
+ *         - name: SetRequestHostHeader<br>
+ *           args:<br>
+ *             host: example.org<br>
+ * <br>
+ * 该SetRequestHostHeader替换Host的值为example.org
+ */
 public class SetRequestHostHeaderGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<SetRequestHostHeaderGatewayFilterFactory.Config> {
 

@@ -36,6 +36,17 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.a
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，采用单个prefix参数，转发到服务提供者的时候，给path加前缀<br>
+ * <br>
+ * routes:<br>
+ *       - id: prefixpath_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - PrefixPath=/mypath<br>
+ * <br>
+ * 以上配置表示将/mypath作为所有匹配请求路径的前缀，因此，将向/hello发送请求/mypath/hello
+ */
 public class PrefixPathGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<PrefixPathGatewayFilterFactory.Config> {
 

@@ -32,6 +32,27 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.H
  * @author Olga Maciaszek-Sharma
  * @author Ryan Baxter
  */
+/**
+ * 网关过滤器工厂，允许在转发到fallbackUri外部应用程序中的请求的标头中添加Spring Cloud Circuit Breaker执行异常详细信息<br>
+ * <br>
+ * routes:<br>
+ *       - id: ingredients-fallback<br>
+ *         uri: http://localhost:9994<br>
+ *         predicates:<br>
+ *         - Path=/fallback<br>
+ *         filters:<br>
+ *         - name: FallbackHeaders<br>
+ *           args:<br>
+ *             executionExceptionTypeHeaderName: Test-Header<br>
+ * <br>
+ * 示例中，在运行断路器时发生执行异常后，请求将转发到fallback运行于 localhost:9994上的应用程序中，
+ * 带有异常类型、消息和（如果可用）根本原因异常类型和消息的标头由FallbackHeaders过滤器添加到该请求中，
+ * 其它可设置的参数名<br>
+ * executionExceptionTypeHeaderName (“Execution-Exception-Type”)<br>
+ * executionExceptionMessageHeaderName (“Execution-Exception-Message”)<br>
+ * rootCauseExceptionTypeHeaderName (“Root-Cause-Exception-Type”)<br>
+ * rootCauseExceptionMessageHeaderName (“Root-Cause-Exception-Message”)<br>
+ */
 public class FallbackHeadersGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<FallbackHeadersGatewayFilterFactory.Config> {
 

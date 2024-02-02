@@ -47,6 +47,8 @@ import org.springframework.util.StringUtils;
  *
  * @author Spencer Gibb
  */
+//路由定义对象查询器，基于服务发现方式
+//该类通过服务发现组件从注册中心获取服务信息，此时路由定义的源就是配置中心
 public class DiscoveryClientRouteDefinitionLocator implements RouteDefinitionLocator {
 
 	private static final Log log = LogFactory

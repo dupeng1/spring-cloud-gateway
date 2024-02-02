@@ -49,6 +49,43 @@ import org.springframework.web.server.ServerWebExchange;
 
 import static org.springframework.cloud.gateway.support.GatewayToStringStyler.filterToStringCreator;
 
+/**
+ * 网关过滤器工厂，该过滤器用于重试请求，支持如下参数的配置：<br>
+ * <br>
+ * retries: 重试的次数<br>
+ * statuses: 遇到什么样的返回状态才重试<br>
+ * methods: 哪些类型的方法会才重试<br>
+ * series: 遇到什么样的series值才重试<br>
+ * exceptions: 遇到什么样的异常才重试<br>
+ * backoff: 重试策略，由多个参数构成。重试时间间隔的计算公式为firstBackoff * (factor ^ n)，n是重试的次数；如果设置了maxBackoff，最大的backoff限制为maxBackoff. 如果 basedOnPreviousValue 设置为 true, backoff 计算公式为 prevBackoff * factor.<br>
+ * <br>
+ * 如果Retry filter启用，默认配置如下：<br>
+ * retries—3 times<br>
+ * series—5XX series<br>
+ * methods—GET method<br>
+ * exceptions—IOException and TimeoutException<br>
+ * backoff—disabled<br>
+ * <br>
+ * routes:<br>
+ *         - id: retry_test<br>
+ *           uri: http://localhost:8080/flakey<br>
+ *           predicates: # 断言<br>
+ *            - Host=*.retry.com<br>
+ *            filters:<br>
+ *         - name: Retry<br>
+ *           args:<br>
+ *             retries: 3<br>
+ *             statuses: BAD_GATEWAY<br>
+ *             methods: GET,POST<br>
+ *             backoff:<br>
+ *               firstBackoff: 10ms<br>
+ *               maxBackoff: 50ms<br>
+ *               factor: 2<br>
+ *               basedOnPreviousValue: false<br>
+ * <br>
+ * 当下游服务返回502状态码时，gateway会重试3次<br>
+ * <br>
+ * */
 public class RetryGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<RetryGatewayFilterFactory.RetryConfig> {
 

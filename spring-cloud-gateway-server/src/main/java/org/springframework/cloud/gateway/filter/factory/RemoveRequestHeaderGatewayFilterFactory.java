@@ -31,6 +31,16 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，需要一个name参数。删除请求header中的指定名称<br>
+ * <br>
+ * routes:<br>
+ *       - id: removerequestheader_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - RemoveRequestHeader=X-Request-Foo<br>
+ * 这会在向下游发送之前删除标头X-Request-Foo
+ */
 public class RemoveRequestHeaderGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<AbstractGatewayFilterFactory.NameConfig> {
 

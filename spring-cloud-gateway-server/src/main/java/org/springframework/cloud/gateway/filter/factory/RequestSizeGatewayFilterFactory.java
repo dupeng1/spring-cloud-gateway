@@ -35,6 +35,20 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
  *
  * @author Arpan
  */
+/**
+ * 网关过滤器工厂，控制请求大小，可以使用KB或者MB等单位，超过这个大小就会返回413错误，接受一个maxSize参数，当请求大小大于允许的限制时，RequestSize可以限制请求到达下游服务<br>
+ * <br>
+ * routes:<br>
+ *       - id: request_size_route<br>
+ *         uri: http://localhost:8080/upload<br>
+ *         predicates:<br>
+ *         - Path=/upload<br>
+ *         filters:<br>
+ *         - name: RequestSize<br>
+ *           args:<br>
+ *             maxSize: 5000000<br>
+ * RequestSize设置响应状态作为413，errorMessage为Payload Too Large与另外的报头时，请求被由于尺寸拒绝
+ */
 public class RequestSizeGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<RequestSizeGatewayFilterFactory.RequestSizeConfig> {
 

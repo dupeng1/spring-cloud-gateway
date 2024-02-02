@@ -30,6 +30,8 @@ import org.springframework.context.ApplicationListener;
 /**
  * @author Spencer Gibb
  */
+//路由定义查询器，基于缓存方式
+//通过传入路由定义查询器获取路由定义并缓存到本地，通过监听路由刷新时间RefreshRoutesEvent来刷新本地缓存的路由定义
 public class CachingRouteDefinitionLocator
 		implements RouteDefinitionLocator, ApplicationListener<RefreshRoutesEvent> {
 

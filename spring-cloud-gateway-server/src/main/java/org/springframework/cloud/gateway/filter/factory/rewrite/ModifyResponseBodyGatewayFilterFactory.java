@@ -60,6 +60,19 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.O
 /**
  * GatewayFilter that modifies the response body.
  */
+/**
+ * 网关过滤器工厂，修改响应body内容，这里官方推荐用代码来配置<br>
+ * @Bean<br>
+ * public RouteLocator routes(RouteLocatorBuilder builder) {<br>
+ *     return builder.routes()<br>
+ *         .route("rewrite_response_upper", r -> r.host("*.rewriteresponseupper.org")<br>
+ *             .filters(f -> f.prefixPath("/httpbin")<br>
+ *                 .modifyResponseBody(String.class, String.class,<br>
+ *                     (exchange, s) -> Mono.just(s.toUpperCase()))).uri(uri))<br>
+ *         .build();<br>
+ * }<br>
+ * 将响应body的内容改为全部大写
+ */
 public class ModifyResponseBodyGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<ModifyResponseBodyGatewayFilterFactory.Config> {
 

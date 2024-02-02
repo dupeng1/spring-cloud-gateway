@@ -29,6 +29,17 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，在请求头部添加参数，需要name和value参数<br>
+ * <br>
+ * routes:<br>
+ *       - id: add_request_header_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - AddRequestHeader=X-Request-red, blue<br>
+ * <br>
+ * 示例表示将X-Request-red：blue消息头添加到所有匹配请求的下游请求消息头中
+ */
 public class AddRequestHeaderGatewayFilterFactory
 		extends AbstractNameValueGatewayFilterFactory {
 

@@ -29,6 +29,17 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，重置请求头的值，如果该key不存在就创建，使用name和value参数接收值<br>
+ * <br>
+ * routes:<br>
+ *       - id: setrequestheader_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - SetRequestHeader=X-Request-Foo, Bar<br>
+ * <br>
+ * 与AddRequestHeader不同的是，这是替换Header而不是添加，在predicates中定义的变量可以用在SetRequestHeader中
+ */
 public class SetRequestHeaderGatewayFilterFactory
 		extends AbstractNameValueGatewayFilterFactory {
 

@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
 /**
  * @author Spencer Gibb
  */
-//路由定义信息修改器
+//路由定义修改器
 public interface RouteDefinitionWriter {
 
 	Mono<Void> save(Mono<RouteDefinition> route);

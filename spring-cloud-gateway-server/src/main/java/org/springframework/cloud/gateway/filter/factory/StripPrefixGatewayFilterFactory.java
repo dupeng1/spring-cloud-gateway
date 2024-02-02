@@ -37,6 +37,18 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.a
  *
  * @author Ryan Baxter
  */
+/**
+ * 网关过滤器工厂，有一个参数:parts，该parts参数指示在将请求发送到下游之前要从请求中剥离的路径中的部分数<br>
+ * <br>
+ * routes:<br>
+ *         - id: nameRoot<br>
+ *           uri: https://nameservice<br>
+ *           predicates:
+ *             - Path=/name/**<br>
+ *           filters:<br>
+ *         - StripPrefix=2<br>
+ * <br>
+ * */
 public class StripPrefixGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<StripPrefixGatewayFilterFactory.Config> {
 

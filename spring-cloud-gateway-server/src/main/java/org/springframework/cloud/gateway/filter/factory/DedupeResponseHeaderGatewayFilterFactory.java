@@ -70,6 +70,19 @@ Modified response header Access-Control-Allow-Credentials: true
 /**
  * @author Vitaliy Pavlyuk
  */
+/**
+ * 网关过滤器工厂，服务提供方返回的response的header中，如果有的key出线了多个value（例如跨域场景下的Access-Control-Allow-Origin）
+ * DedupeResponseHeader过滤器可以将重复的value剔除掉，剔除策略有三种：RETAIN_FIRST (保留第一个，默认), RETAIN_LAST（保留最后一个）,
+ * RETAIN_UNIQUE（去重），接受一个name参数和一个可选strategy参数，name可以包含以空格分隔的标题名称列表<br>
+ * <br>
+ * routes:<br>
+ *       - id: dedupe_response_header_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin, RETAIN_LAST<br>
+ * <br>
+ * 如果网关CORS逻辑和下游逻辑都添加了响应头Access-Control-Allow-Credentials和Access-Control-Allow-Origin响应头的重复值，这将删除它们
+ */
 public class DedupeResponseHeaderGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<DedupeResponseHeaderGatewayFilterFactory.Config> {
 

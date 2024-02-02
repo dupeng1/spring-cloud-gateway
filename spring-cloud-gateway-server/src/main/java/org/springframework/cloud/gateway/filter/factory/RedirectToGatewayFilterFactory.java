@@ -37,6 +37,16 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.s
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，重定向，需要两个参数，status和url，该status参数应该是300系列HTTP重定向代码，如301，url参数应该是一个有效的URL。这是消息头的Location值<br>
+ * <br>
+ * routes:<br>
+ *       - id: prefixpath_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - RedirectTo=302, https://acme.org<br>
+ * 以上配置表示，将设置302状态码，并添加Location为 https://acme.org的消息头
+ */
 public class RedirectToGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<RedirectToGatewayFilterFactory.Config> {
 

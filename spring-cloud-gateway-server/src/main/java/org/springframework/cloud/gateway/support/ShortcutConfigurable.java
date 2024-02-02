@@ -34,6 +34,14 @@ import org.springframework.util.Assert;
 /**
  * @author Spencer Gibb
  */
+
+/**
+ * 接口提供的默认方法，主要用于对过滤器和断言参数进行标准化处理，将表达式和生成的键进行转换
+ * 1、对键进行标准化处理，因为键有可能是自动生成，当键以_genkey_开头时，表明是自动生成的
+ * 2、获取真实值，需要传入Spring EL解析器、Bean工厂等工具类
+ * 3、对传入的 entryValue 是一个表达式的情况进行处理，这里默认是 Spring EL 表达式
+ * 4、返回有关参数数量和解析顺序的提示
+ */
 public interface ShortcutConfigurable {
 
 	static String normalizeKey(String key, int entryIdx, ShortcutConfigurable argHints,

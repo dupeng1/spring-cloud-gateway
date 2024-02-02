@@ -37,6 +37,7 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 /**
  * @author Spencer Gibb
  */
+//路由定位器缓存实现
 public class CachingRouteLocator implements Ordered, RouteLocator,
 		ApplicationListener<RefreshRoutesEvent>, ApplicationEventPublisherAware {
 

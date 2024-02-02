@@ -28,6 +28,17 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.P
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，没有参数，在转发请求到服务提供者的时候，会保留host信息，发送原始Host消息头，而不是由HTTP客户端确定的Host消息头，
+ * 如果没有配置此过滤器，服务提供者收到的请求header中的host就是网关配置的信息<br>
+ * <br>
+ * routes:<br>
+ *       - id: preserve_host_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - PreserveHostHeader<br>
+ * <br>
+ */
 public class PreserveHostHeaderGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<Object> {
 

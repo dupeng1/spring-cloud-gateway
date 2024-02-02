@@ -32,6 +32,18 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * @author Vitaliy Pavlyuk
  */
+/**
+ * 网关过滤器工厂，修改响应header，需要name，regexp和replacement参数，header的key、匹配value的正则表达式、修改value的结果<br>
+ * <br>
+ * routes:<br>
+ *       - id: rewriteresponseheader_route<br>
+ *         uri: https://example.org<br>
+ *         predicates:<br>
+ *         - Path=/red/**<br>
+ *         filters:<br>
+ *         - RewriteResponseHeader=X-Response-Red, , password=[^&]+, password=***<br>
+ * 上面的配置表示修改响应header中X-Response-Red这个key的value，找到password=xxx的内容，改成password=***
+ */
 public class RewriteResponseHeaderGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<RewriteResponseHeaderGatewayFilterFactory.Config> {
 

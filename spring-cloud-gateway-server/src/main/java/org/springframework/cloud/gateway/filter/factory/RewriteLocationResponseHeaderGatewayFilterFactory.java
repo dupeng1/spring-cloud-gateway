@@ -93,6 +93,23 @@ Modified (not) Location response header: http://object-service.prod.example.net/
 /**
  * @author Vitaliy Pavlyuk
  */
+/**
+ * 网关过滤器工厂，修改响应头Location的值，一共是四个参数：stripVersionMode、locationHeaderName、hostValue、protocolsRegex<br>
+ * <br>
+ * routes:<br>
+ *       - id: rewritelocationresponseheader_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - RewriteLocationResponseHeader=AS_IN_REQUEST, Location, ,<br>
+ *         <br>
+ * stripVersionMode的策略一共三种，NEVER_STRIP：不执行；AS_IN_REQUEST：原始请求没有vesion，就执行；ALWAYS_STRIP：固定执行<br>
+ * Location用于替换host:port部分，如果没有就是用Request中的host<br>
+ * protocolsRegex用于匹配协议，如果匹配不上，name过滤器啥都不做<br>
+ * <br>
+ * 如果请求是http://api.example.com/some/object/name，<br>
+ * response的location是http://object-service.prod.example.net/v2/some/object/id，<br>
+ * 最终会被下面的filter改写为http://api.example.com/some/object/id<br>
+ */
 public class RewriteLocationResponseHeaderGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<RewriteLocationResponseHeaderGatewayFilterFactory.Config> {
 

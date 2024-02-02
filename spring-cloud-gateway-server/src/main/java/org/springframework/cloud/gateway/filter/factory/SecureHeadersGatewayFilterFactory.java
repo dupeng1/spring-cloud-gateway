@@ -32,6 +32,17 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
  *
  * @author Spencer Gibb, Thirunavukkarasu Ravichandran
  */
+/**
+ * 网关过滤器工厂，会在响应的header中添加很多和安全相关的内容<br>
+ * <br>
+ * routes:<br>
+ *       - id: path_route<br>
+ *         uri: https://example.org<br>
+ *         predicates:<br>
+ *         - Path=/red/**<br>
+ *         filters:<br>
+ *         - SecureHeaders
+ */
 public class SecureHeadersGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<SecureHeadersGatewayFilterFactory.Config> {
 

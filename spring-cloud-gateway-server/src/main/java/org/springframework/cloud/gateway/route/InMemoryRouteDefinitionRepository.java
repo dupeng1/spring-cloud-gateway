@@ -30,6 +30,7 @@ import static java.util.Collections.synchronizedMap;
 /**
  * @author Spencer Gibb
  */
+//路由定义dao，基于内存方式
 public class InMemoryRouteDefinitionRepository implements RouteDefinitionRepository {
 
 	private final Map<String, RouteDefinition> routes = synchronizedMap(

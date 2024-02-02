@@ -35,6 +35,18 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
  *
  * @author Greg Turnquist
  */
+/**
+ * 网关过滤器工厂，在向下游服务转发请求之前强制执行 WebSession::save操作，
+ * 这在将Spring Session 之类的东西与惰性数据存储一起使用时特别有用，并且您需要确保在进行转发调用之前已保存会话状态<br>
+ * <br>
+ * routes:<br>
+ *       - id: save_session<br>
+ *         uri: https://example.org<br>
+ *         predicates:<br>
+ *         - Path=/red/**<br>
+ *         filters:<br>
+ *         - SaveSession
+ */
 public class SaveSessionGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<Object> {
 

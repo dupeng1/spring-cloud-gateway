@@ -28,6 +28,17 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，在响应的header中添加参数，需要name和value参数<br>
+ * <br>
+ * routes:<br>
+ *       - id: add_response_header_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - AddResponseHeader=X-Response-Red, Blue<br>
+ * <br>
+ * 示例表示将X-Response-Foo：Bar添加到所有匹配请求的下游响应消息头中
+ */
 public class AddResponseHeaderGatewayFilterFactory
 		extends AbstractNameValueGatewayFilterFactory {
 

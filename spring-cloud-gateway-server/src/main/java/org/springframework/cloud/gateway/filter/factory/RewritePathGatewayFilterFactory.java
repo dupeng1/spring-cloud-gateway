@@ -34,6 +34,18 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.a
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，将请求路径做变换，采用regexp参数和replacement参数。使用Java正则表达式来灵活地重写请求路径<br>
+ * <br>
+ * routes:<br>
+ *       - id: rewritepath_route<br>
+ *         uri: https://example.org<br>
+ *         predicates:<br>
+ *         - Path=/red/**<br>
+ *         filters:<br>
+ *         - RewritePath=/red/?(?<segment>.*), /${segment}<br>
+ * 对于/red/blue的请求路径，这会在发出下游请求之前将路径设置为/blue
+ */
 public class RewritePathGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<RewritePathGatewayFilterFactory.Config> {
 

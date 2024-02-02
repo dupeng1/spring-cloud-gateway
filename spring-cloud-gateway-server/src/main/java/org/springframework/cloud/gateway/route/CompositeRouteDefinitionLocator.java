@@ -28,6 +28,8 @@ import org.springframework.util.IdGenerator;
 /**
  * @author Spencer Gibb
  */
+//路由定义查询器，基于组合方式
+//组合多个RouteDefinitionLocator实现，为获取路由定义getRouteDefinitions提供统一入口，组合逻辑很简单，通过传入的路由定义查询器作为代理，具体的路由定义实际上是由传入的路由定义查询器产生
 public class CompositeRouteDefinitionLocator implements RouteDefinitionLocator {
 
 	private static final Log log = LogFactory

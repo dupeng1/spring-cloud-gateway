@@ -19,7 +19,7 @@ package org.springframework.cloud.gateway.route;
 /**
  * @author Spencer Gibb
  */
-//路由定义信息dao
+//路由定义dao，用来对路由定义对象进行增、删、查操作
 public interface RouteDefinitionRepository
 		extends RouteDefinitionLocator, RouteDefinitionWriter {
 

@@ -37,6 +37,19 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.g
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，输入一个参数：template，匹配Spring Framework URI路径模板并修改，允许多个匹配<br>
+ * <br>
+ * routes:<br>
+ *       - id: path_route<br>
+ *         uri: https://example.org<br>
+ *         predicates:<br>
+ *         - Path=/test/{segment}<br>
+ *         filters:<br>
+ *         - SetPath=/hello/{segment}<br>
+ * <br>
+ * 请求/test/bar会被设置为/hello/bar到下游
+ */
 public class SetPathGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<SetPathGatewayFilterFactory.Config> {
 

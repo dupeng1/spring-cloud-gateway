@@ -33,6 +33,17 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，添加请求参数，需要name和value参数<br>
+ * <br>
+ * routes:<br>
+ *       - id: add_request_parameter_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - AddRequestParameter=red, blue<br>
+ * <br>
+ * 示例表示将red=blue添加到下游请求参数中
+ */
 public class AddRequestParameterGatewayFilterFactory
 		extends AbstractNameValueGatewayFilterFactory {
 

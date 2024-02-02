@@ -31,6 +31,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.t
  * @author Spencer Gibb
  */
 // 路由断言工厂，例如- Path就可以匹配到内置的PathRoutePredicateFactory
+// apply方法产生一个Predicate
 @FunctionalInterface
 public interface RoutePredicateFactory<C> extends ShortcutConfigurable, Configurable<C> {
 

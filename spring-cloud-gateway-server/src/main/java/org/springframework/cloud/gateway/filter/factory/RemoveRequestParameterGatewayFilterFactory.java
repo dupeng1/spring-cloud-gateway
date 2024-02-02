@@ -36,6 +36,16 @@ import static org.springframework.util.CollectionUtils.unmodifiableMultiValueMap
 /**
  * @author Thirunavukkarasu Ravichandran
  */
+/**
+ * 网关过滤器工厂，需要一个name参数。删除请求参数中的指定参数<br>
+ * <br>
+ * routes:<br>
+ *       - id: removerequestparameter_route<br>
+ *         uri: https://example.org<br>
+ *         filters:<br>
+ *         - RemoveRequestParameter=red<br>
+ * 这将在将参数发送到下游之前删除参数red
+ */
 public class RemoveRequestParameterGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<AbstractGatewayFilterFactory.NameConfig> {
 

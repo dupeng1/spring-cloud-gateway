@@ -45,6 +45,19 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * GatewayFilter that modifies the request body.
  */
+/**
+ * 网关过滤器工厂，修改请求的body内容，这里官方推荐用代码来配置，然后将其由网关向下游发送<br>
+ * @Bean <br>
+ * public RouteLocator routes(RouteLocatorBuilder builder) {<br>
+ *   return builder.routes()<br>
+ *       .route("rewrite_request_obj", r -> r.host("*.rewriterequestobj.org")<br>
+ *           .filters(f -> f.prefixPath("/httpbin")<br>
+ *               .modifyRequestBody(String.class, Hello.class, MediaType.APPLICATION_JSON_VALUE,<br>
+ *                   (exchange, s) -> return Mono.just(new Hello(s.toUpperCase())))).uri(uri))<br>
+ *       .build();<br>
+ * }<br>
+ * 请求body中原本是字符串，结果被改成了Hello对象的实例
+ */
 public class ModifyRequestBodyGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<ModifyRequestBodyGatewayFilterFactory.Config> {
 

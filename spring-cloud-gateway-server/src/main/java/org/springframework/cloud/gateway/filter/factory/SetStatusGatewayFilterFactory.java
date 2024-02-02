@@ -35,6 +35,18 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.s
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，控制返回code，采用单个参数，它必须是有效的 Spring Http Status，可能是404枚举的整数值或字符串表示形式：NOT_FOUND<br>
+ * <br>
+ * routes:<br>
+ *       - id: setstatusstring_route<br>
+ *         uri: https://example.org<br>
+ *         predicates:<br>
+ *         - Path=/foo/{segment}<br>
+ *         filters:<br>
+ *         - SetStatus=BAD_REQUEST<br>
+ * <br>
+ */
 @ConfigurationProperties("spring.cloud.gateway.set-status")
 public class SetStatusGatewayFilterFactory
 		extends AbstractGatewayFilterFactory<SetStatusGatewayFilterFactory.Config> {

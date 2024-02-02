@@ -34,6 +34,9 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.s
  * User Request Rate Limiter filter. See https://stripe.com/blog/rate-limiters and
  * https://gist.github.com/ptarjan/e38f45f2dfe601419ca3af937fff574d#file-1-check_request_rate_limiter-rb-L11-L34.
  */
+/**
+ * 网关过滤器工厂，使用RateLimiter实现是否允许继续执行当前请求
+ */
 @ConfigurationProperties("spring.cloud.gateway.filter.request-rate-limiter")
 public class RequestRateLimiterGatewayFilterFactory extends
 		AbstractGatewayFilterFactory<RequestRateLimiterGatewayFilterFactory.Config> {

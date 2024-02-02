@@ -28,6 +28,19 @@ import static org.springframework.cloud.gateway.support.GatewayToStringStyler.fi
 /**
  * @author Spencer Gibb
  */
+/**
+ * 网关过滤器工厂，重置响应header的值，将指定key改为指定value，如果该key不存在就创建<br>
+ * <br>
+ * routes:<br>
+ *       - id: setresponseheader_route<br>
+ *         uri: https://example.org<br>
+ *         predicates:<br>
+ *         - Path=/foo/{segment}<br>
+ *         filters:<br>
+ *         - SetRequestHeader=X-Request-Foo, Bar<br>
+ * <br>
+ * 替换（而不是添加）具有给定名称的所有标头，因此，如果下游服务器以X-Response-Red:1234响应，则将其替换为X-Response-Red:Blue
+ */
 public class SetResponseHeaderGatewayFilterFactory
 		extends AbstractNameValueGatewayFilterFactory {
 

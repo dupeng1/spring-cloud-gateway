@@ -66,12 +66,15 @@ public class RouteDefinitionRouteLocator
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	//路由定义对象查询器
 	private final RouteDefinitionLocator routeDefinitionLocator;
 
 	private final ConfigurationService configurationService;
 
+	//断言
 	private final Map<String, RoutePredicateFactory> predicates = new LinkedHashMap<>();
 
+	//过滤器
 	private final Map<String, GatewayFilterFactory> gatewayFilterFactories = new HashMap<>();
 
 	private final GatewayProperties gatewayProperties;
