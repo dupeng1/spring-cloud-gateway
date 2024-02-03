@@ -33,6 +33,11 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.i
  *
  * @author Ryan Baxter
  */
+
+/**
+ * 判断是不是forward，是则替换request的path，在请求转发（Forward）时，处理请求路径的修改和重写，
+ * 它通常用于将请求从一个路径转发到另一个路径，并且可以在此过程中对请求路径进行修改
+ */
 public class ForwardPathFilter implements GlobalFilter, Ordered {
 
 	@Override

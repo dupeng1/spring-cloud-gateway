@@ -77,6 +77,7 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 
 	private static final Log log = LogFactory.getLog(NettyRoutingFilter.class);
 
+	// 基于Netty实现的HttpClient，通过该属性，请求后端的Http服务
 	private final HttpClient httpClient;
 
 	private final ObjectProvider<List<HttpHeadersFilter>> headersFiltersProvider;
@@ -109,23 +110,26 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 	@Override
 	@SuppressWarnings("Duplicates")
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+		// 获得requestUrl
 		URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
-
+		// 判断是否能够处理
 		String scheme = requestUrl.getScheme();
 		if (isAlreadyRouted(exchange) || (!"http".equalsIgnoreCase(scheme)
 				&& !"https".equalsIgnoreCase(scheme))) {
 			return chain.filter(exchange);
 		}
+		// 设置已经路由
 		setAlreadyRouted(exchange);
 
 		ServerHttpRequest request = exchange.getRequest();
-
+		//创建Netty Request Method对象
 		final HttpMethod method = HttpMethod.valueOf(request.getMethodValue());
 		final String url = requestUrl.toASCIIString();
 
 		HttpHeaders filtered = filterRequest(getHeadersFilters(), exchange);
-
+		// 创建Netty Request Header对象
 		final DefaultHttpHeaders httpHeaders = new DefaultHttpHeaders();
+		// 将请求的Header设置给它
 		filtered.forEach(httpHeaders::set);
 
 		boolean preserveHost = exchange
@@ -134,8 +138,10 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 		//构建请求，使用HttpClient进行转发
 		Flux<HttpClientResponse> responseFlux = getHttpClient(route, exchange)
 				.headers(headers -> {
+					//netty request header添加http request header
 					headers.add(httpHeaders);
 					// Will either be set below, or later by Netty
+					//修改netty request header的host
 					headers.remove(HttpHeaders.HOST);
 					if (preserveHost) {
 						String host = request.getHeaders().getFirst(HttpHeaders.HOST);
@@ -154,26 +160,32 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 					// Defer committing the response until all route filters have run
 					// Put client response as ServerWebExchange attribute and write
 					// response later NettyWriteResponseFilter
+					// 保存响应信息到exchange上下文，流到NettyWriteResponseFilter的.then把响应结果发回客户端
+					// 把响应结果放到CLIENT_RESPONSE_ATTR
 					exchange.getAttributes().put(CLIENT_RESPONSE_ATTR, res);
+					//把connection放到CLIENT_RESPONSE_CONN_ATTR
 					exchange.getAttributes().put(CLIENT_RESPONSE_CONN_ATTR, connection);
-
+					//获得http response
 					ServerHttpResponse response = exchange.getResponse();
 					// put headers and status so filters can modify the response
 					HttpHeaders headers = new HttpHeaders();
-
+					// netty response header添加到http header
 					res.responseHeaders().forEach(
 							entry -> headers.add(entry.getKey(), entry.getValue()));
 
+					// 获取数据类型，并保存到ORIGINAL_RESPONSE_CONTENT_TYPE_ATTR
 					String contentTypeValue = headers.getFirst(HttpHeaders.CONTENT_TYPE);
 					if (StringUtils.hasLength(contentTypeValue)) {
 						exchange.getAttributes().put(ORIGINAL_RESPONSE_CONTENT_TYPE_ATTR,
 								contentTypeValue);
 					}
 
+					// 把请求目标地址返回的status设置到http response
 					setResponseStatus(res, response);
 
 					// make sure headers filters run after setting status so it is
 					// available in response
+					// 确保Response的HttpHeadersFilter在请求响应后执行
 					HttpHeaders filteredResponseHeaders = HttpHeadersFilter.filter(
 							getHeadersFilters(), headers, exchange, Type.RESPONSE);
 
@@ -190,7 +202,7 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 
 					exchange.getAttributes().put(CLIENT_RESPONSE_HEADER_NAMES,
 							filteredResponseHeaders.keySet());
-
+					//修改http response headers
 					response.getHeaders().putAll(filteredResponseHeaders);
 
 					return Mono.just(res);
@@ -198,9 +210,12 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 
 		Duration responseTimeout = getResponseTimeout(route);
 		if (responseTimeout != null) {
+			// 发起请求
 			responseFlux = responseFlux
+					// 设置响应超时时间
 					.timeout(responseTimeout, Mono.error(new TimeoutException(
 							"Response took longer than timeout: " + responseTimeout)))
+					// 传播一个超时异常
 					.onErrorMap(TimeoutException.class,
 							th -> new ResponseStatusException(HttpStatus.GATEWAY_TIMEOUT,
 									th.getMessage(), th));
@@ -209,6 +224,7 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 		return responseFlux.then(chain.filter(exchange));
 	}
 
+	//把DataBuffer转成ByteBuf，用于netty请求目标地址
 	protected ByteBuf getByteBuf(DataBuffer dataBuffer) {
 		if (dataBuffer instanceof NettyDataBuffer) {
 			NettyDataBuffer buffer = (NettyDataBuffer) dataBuffer;
@@ -223,6 +239,7 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 				"Unable to handle DataBuffer of type " + dataBuffer.getClass());
 	}
 
+	//把请求目标地址返回的status设置到exchange.getResponse
 	private void setResponseStatus(HttpClientResponse clientResponse,
 			ServerHttpResponse response) {
 		HttpStatus status = HttpStatus.resolve(clientResponse.status().code());
@@ -255,6 +272,7 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 	 * @param chain the current GatewayFilterChain.
 	 * @return
 	 */
+	//创建一个基于Netty的HttpClient
 	protected HttpClient getHttpClient(Route route, ServerWebExchange exchange) {
 		Object connectTimeoutAttr = route.getMetadata().get(CONNECT_TIMEOUT_ATTR);
 		if (connectTimeoutAttr != null) {
@@ -265,6 +283,7 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 		return httpClient;
 	}
 
+	//根据route的Metadata的CONNECT_TIMEOUT_ATTR获取连接超时时间
 	static Integer getInteger(Object connectTimeoutAttr) {
 		Integer connectTimeout;
 		if (connectTimeoutAttr instanceof Integer) {
@@ -276,6 +295,7 @@ public class NettyRoutingFilter implements GlobalFilter, Ordered {
 		return connectTimeout;
 	}
 
+	//根据route获取响应超时时间
 	private Duration getResponseTimeout(Route route) {
 		Object responseTimeoutAttr = route.getMetadata().get(RESPONSE_TIMEOUT_ATTR);
 		Long responseTimeout = null;

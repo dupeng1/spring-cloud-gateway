@@ -24,8 +24,10 @@ import org.springframework.web.server.ServerWebExchange;
 /**
  * @author Spencer Gibb
  */
+//一个有序的网关过滤器
 public class OrderedGatewayFilter implements GatewayFilter, Ordered {
 
+	//代理的网关过滤器
 	private final GatewayFilter delegate;
 
 	private final int order;

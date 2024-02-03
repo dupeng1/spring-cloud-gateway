@@ -196,6 +196,7 @@ public class ModifyResponseBodyGatewayFilterFactory extends
 
 	}
 
+	//一个内部类，用于修改响应体
 	public class ModifyResponseGatewayFilter implements GatewayFilter, Ordered {
 
 		private final Config config;

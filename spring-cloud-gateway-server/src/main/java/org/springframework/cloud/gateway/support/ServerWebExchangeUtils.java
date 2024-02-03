@@ -361,9 +361,11 @@ public final class ServerWebExchangeUtils {
 		NettyDataBufferFactory factory = (NettyDataBufferFactory) response
 				.bufferFactory();
 		// Join all the DataBuffers so we have a single DataBuffer for the body
+		//将所有DataBuffer拼接起来，这样我们可以有一个完整的body
 		return DataBufferUtils.join(exchange.getRequest().getBody())
 				.defaultIfEmpty(
 						factory.wrap(new EmptyByteBuf(factory.getByteBufAllocator())))
+				//此处decorate方法中会将缓存放入网关上下文
 				.map(dataBuffer -> decorate(exchange, dataBuffer, cacheDecoratedRequest))
 				.switchIfEmpty(Mono.just(exchange.getRequest())).flatMap(function);
 	}
@@ -374,6 +376,7 @@ public final class ServerWebExchangeUtils {
 			if (log.isTraceEnabled()) {
 				log.trace("retaining body in exchange attribute");
 			}
+			//此处会将请求的body信息放入网关上下文，方便后面获取
 			exchange.getAttributes().put(CACHED_REQUEST_BODY_ATTR, dataBuffer);
 		}
 

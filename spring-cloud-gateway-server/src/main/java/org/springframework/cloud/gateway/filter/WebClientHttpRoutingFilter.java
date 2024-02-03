@@ -44,6 +44,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.s
 /**
  * @author Spencer Gibb
  */
+//Http路由网关过滤器
 public class WebClientHttpRoutingFilter implements GlobalFilter, Ordered {
 
 	private final WebClient webClient;
@@ -73,13 +74,15 @@ public class WebClientHttpRoutingFilter implements GlobalFilter, Ordered {
 
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+		//获得requestUrl
 		URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
-
+		// 判断是否能够处理
 		String scheme = requestUrl.getScheme();
 		if (isAlreadyRouted(exchange)
 				|| (!"http".equals(scheme) && !"https".equals(scheme))) {
 			return chain.filter(exchange);
 		}
+		// 设置已经路由
 		setAlreadyRouted(exchange);
 
 		ServerHttpRequest request = exchange.getRequest();
@@ -91,6 +94,7 @@ public class WebClientHttpRoutingFilter implements GlobalFilter, Ordered {
 		boolean preserveHost = exchange
 				.getAttributeOrDefault(PRESERVE_HOST_HEADER_ATTRIBUTE, false);
 
+		//设置method属性、header属性
 		RequestBodySpec bodySpec = this.webClient.method(method).uri(requestUrl)
 				.headers(httpHeaders -> {
 					httpHeaders.addAll(filteredHeaders);
@@ -99,7 +103,7 @@ public class WebClientHttpRoutingFilter implements GlobalFilter, Ordered {
 						httpHeaders.remove(HttpHeaders.HOST);
 					}
 				});
-
+		//设置body属性
 		RequestHeadersSpec<?> headersSpec;
 		if (requiresBody(method)) {
 			headersSpec = bodySpec.body(BodyInserters.fromDataBuffers(request.getBody()));
@@ -112,8 +116,11 @@ public class WebClientHttpRoutingFilter implements GlobalFilter, Ordered {
 				// .log("webClient route")
 				.flatMap(res -> {
 					ServerHttpResponse response = exchange.getResponse();
+					//设置response的header属性
 					response.getHeaders().putAll(res.headers().asHttpHeaders());
+					//设置response的status属性
 					response.setStatusCode(res.statusCode());
+					//设置res到CLIENT_RESPONSE_ATTR，后续WebClientWriteResponseFilter将响应回写给客户端
 					// Defer committing the response until all route filters have run
 					// Put client response as ServerWebExchange attribute and write
 					// response later NettyWriteResponseFilter

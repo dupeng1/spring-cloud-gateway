@@ -135,6 +135,7 @@ public class FilteringWebHandler implements WebHandler {
 
 	}
 
+	//是一个适配器类，作用就是将全局过滤器GlobalFilter适配成网关过滤器GatewayFilter
 	private static class GatewayFilterAdapter implements GatewayFilter {
 
 		private final GlobalFilter delegate;

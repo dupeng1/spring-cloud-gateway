@@ -78,6 +78,7 @@ public class RouteToRequestUrlFilter implements GlobalFilter, Ordered {
 		// 得到uri=http://localhost:8081/order/list?token=123
 		URI uri = exchange.getRequest().getURI();
 		boolean encoded = containsEncodedParts(uri);
+		//从路由配置中获取目标服务的uri
 		URI routeUri = route.getUri();
 
 		if (hasAnotherScheme(routeUri)) {

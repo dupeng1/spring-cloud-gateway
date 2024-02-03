@@ -42,7 +42,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.C
  */
 
 /**
- * 用来写响应
+ * NettyWriteResponseFilter，与NettyRoutingFilter成对使用的网关过滤器，其将NettyRoutingFilter请求后端Http服务的响应回写客户端
  */
 public class NettyWriteResponseFilter implements GlobalFilter, Ordered {
 
@@ -72,9 +72,11 @@ public class NettyWriteResponseFilter implements GlobalFilter, Ordered {
 		return chain.filter(exchange)
 				.doOnError(throwable -> cleanup(exchange))
 				.then(Mono.defer(() -> {
+					//获得NettyRoutingFilter返回的Response
 					Connection connection = exchange.getAttribute(CLIENT_RESPONSE_CONN_ATTR);
 
 					if (connection == null) {
+						//如果NettyRoutingFilter返回的connection为null，直接返回空
 						return Mono.empty();
 					}
 					if (log.isTraceEnabled()) {
@@ -82,15 +84,18 @@ public class NettyWriteResponseFilter implements GlobalFilter, Ordered {
 								+ connection.channel().id().asShortText() + ", outbound: "
 								+ exchange.getLogPrefix());
 					}
+					//获得http response
 					ServerHttpResponse response = exchange.getResponse();
 
 					// TODO: needed?
+					//获得connection的inbound数据流，并转成DataBuffer类型元素
 					final Flux<DataBuffer> body = connection
 							.inbound()
 							.receive()
 							.retain()
 							.map(byteBuf -> wrap(byteBuf, response));
 
+					//获取响应内容类型
 					MediaType contentType = null;
 					try {
 						contentType = response.getHeaders().getContentType();
@@ -100,6 +105,7 @@ public class NettyWriteResponseFilter implements GlobalFilter, Ordered {
 							log.trace("invalid media type", e);
 						}
 					}
+					//使用http response输出流或文本
 					return (isStreamingMediaType(contentType)
 							? response.writeAndFlushWith(body.map(Flux::just))
 							: response.writeWith(body));
@@ -107,6 +113,7 @@ public class NettyWriteResponseFilter implements GlobalFilter, Ordered {
 		// @formatter:on
 	}
 
+	//把netty请求的ByteBuf转成DataBuffer
 	protected DataBuffer wrap(ByteBuf byteBuf, ServerHttpResponse response) {
 		DataBufferFactory bufferFactory = response.bufferFactory();
 		if (bufferFactory instanceof NettyDataBufferFactory) {

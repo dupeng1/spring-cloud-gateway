@@ -34,6 +34,13 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.C
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.CACHED_SERVER_HTTP_REQUEST_DECORATOR_ATTR;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_ROUTE_ATTR;
 
+/**
+ * 将请求体缓存到网关中，以便再后续的请求中重复使用，这个过滤器通常用于优化跨集群的服务通信<br>
+ * 服务之间的通信可能需要经过网关进行路由和转发，在某些情况下，多个服务可能需要对同一个请求体进行处理，但由于HTTP请求特性，请求体在传递
+ * 过程中只能被读取一次，为了解决这个问题，通过缓存请求体的方式，使得多个服务可以在后续的请求中重复使用该请求体<br>
+ * 通过缓存请求体，可以提高服务之间的通信效率，减少不必要的数据传输和处理，它可以避免在每个服务中都重新读取请求体，从而节省了网络带宽
+ * 和服务资源
+ */
 public class AdaptCachedBodyGlobalFilter
 		implements GlobalFilter, Ordered, ApplicationListener<EnableBodyCachingEvent> {
 
@@ -69,7 +76,7 @@ public class AdaptCachedBodyGlobalFilter
 		if (body != null || !this.routesToCache.containsKey(route.getId())) {
 			return chain.filter(exchange);
 		}
-
+		//此处是缓存过滤器的核心，在此工具方法中会将缓存存入网关上下文中
 		return ServerWebExchangeUtils.cacheRequestBody(exchange, (serverHttpRequest) -> {
 			// don't mutate and build if same request object
 			if (serverHttpRequest == exchange.getRequest()) {
